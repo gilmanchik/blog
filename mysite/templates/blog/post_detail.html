@@ -1,11 +1,39 @@
 {% extends 'base.html' %}
+{% load blog_tags %}
 
 {% block title %}{{ posts.title }}{% endblock %}
 
 {% block content %}
-    <h1>{{ posts.title }}</h1>
+    <h1>{{ post.title }}</h1>
     <p class="date">
-        Published {{ posts.publish }} by {{ posts.author }}
+        Published {{ post.publish }} by {{ post.author }}
     </p>
-    {{ posts.body|linebreaks }}
+    {{ post.body|markdown }}
+    <p>
+        <a href="{% url 'blog:post_share' post.id%}">Share this post</a>
+    </p>
+
+    <h2>Simular post</h2>
+    {% for post in simular_post %}
+        <p>
+            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+        </p>
+    {% empty %}
+        <p>There is not simular post</p>
+    {% endfor %}
+    {% with comments.count as total_comments %}
+        <h2>{{ total_comments }} comment{{ total_comments|pluralize }}</h2>
+    {% endwith %}
+    {% for comment in comments %}
+        <div class="comment">
+            <p class="info">
+                Comment {{ forloop.counter }} by {{ comment.name }}
+                {{ comment.created}}
+            </p>
+            {{ comment.body|linebreaks }}
+        </div>
+    {% empty %}
+        <p>There is no comment</p>
+    {% endfor %}
+    {% include 'blog/includes/comment_form.html' %}
 {% endblock %}
