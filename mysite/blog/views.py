@@ -11,7 +11,7 @@ from taggit.models import Tag
 from .forms import *
 from .models import *
 
-
+a = 1
 def post_list(request, tag_slug=None):
     post = Post.published.all()
     tag = None
